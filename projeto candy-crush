@@ -1,1 +1,49 @@
-Projeto Candy Crush
+// Criar um jogo de fase e definir o tamanho da tela
+const game = new Phaser.Game({
+  type: Phaser.CANVAS,
+  parent: 'game-container',
+  width: 400,
+  height: 400,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 0 }
+    }
+  },
+  scene: {
+    preload: preload,
+    create: create,
+    update: update
+  }
+});
+
+// Assets pré-carrgeados (sprites, sounds, etc.)
+function preload() {
+  this.load.image('candy', 'assets/candy.png');
+}
+
+// Configure o tabuleiro do jogo e crie objetos de jogo
+função criar() {
+  // Crie uma grade com pedaços dos doce
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      const candy = this.physics.add.sprite(i * 100, j * 100, 'candy');
+      candy.setBounce(0.2);
+      candy.setCollideWorldBounds(true);
+    }
+  }
+
+  // Adicione a entrada do usuário para trocar os doces de lugar
+  this.input.on('gameobjectdown', (pointer, gameObject) => {
+    const candy1 = gameObject;
+    const candy2 = this.input.activePointer.target;
+
+    // Troque a posição de dois doces de lugar
+    const tempX = candy1.x;
+    const tempY = candy1.y;
+    candy1.x = candy2.x;
+    candy1.y = candy2.y;
+    candy2.x = tempX;
+    candy2.y = tempY;
+  });
+}
